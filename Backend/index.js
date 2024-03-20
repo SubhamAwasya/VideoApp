@@ -27,7 +27,7 @@ mongoose.set("strictQuery", false);
 // middlewares;
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://172.25.48.1:5500",
     credentials: true,
   })
 );
