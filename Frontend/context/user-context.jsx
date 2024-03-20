@@ -1,7 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
 
-const baseRout = "http://localhost:9999/api/";
-const rout = "http://localhost:9999/api/auth/login_with_accesstoken";
+const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
+const LocalBaseRout = "http://localhost:9999";
+
+const rout = `${ServerBaseRout}/api/auth/login_with_accesstoken`;
 
 // Create a context for the user
 export const UserContext = createContext(null);
@@ -54,7 +56,7 @@ const UserProvider = ({ children }) => {
   // Function to simulate user logout
   const logOut = async () => {
     try {
-      await fetch(`${baseRout}auth/logout`, {
+      await fetch(`${ServerBaseRout}/api/auth/logout`, {
         method: "post",
         credentials: "include",
         headers: {
