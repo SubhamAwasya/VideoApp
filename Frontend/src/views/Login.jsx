@@ -3,8 +3,11 @@ import { UserContext } from "../../context/user-context.jsx";
 import { Link, json } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
+const LocalBaseRout = "http://localhost:9999";
+
 function Login() {
-  const rout = "http://localhost:9999/api/auth/signin";
+  const rout = `${ServerBaseRout}/api/auth/signin`;
   const { user, logIn } = useContext(UserContext);
   // const [isSideBarOpen, setisSideBarOpen] = useState("");
   // this is for UI perpose so user know that Wait for server response

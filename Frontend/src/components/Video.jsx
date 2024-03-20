@@ -3,13 +3,16 @@ import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import { Link } from "react-router-dom";
 
+const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
+const LocalBaseRout = "http://localhost:9999";
+
 const Video = ({ props }) => {
   const [userData, setUserData] = useState({});
 
   async function fetchUserData() {
     try {
       const userResponse = await fetch(
-        `http://localhost:9999/api/users/find/${props.userId}`
+        `${ServerBaseRout}/api/users/find/${props.userId}`
       );
       setUserData(await userResponse.json());
     } catch (error) {

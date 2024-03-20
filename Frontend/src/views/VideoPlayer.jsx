@@ -7,7 +7,9 @@ import { useParams } from "react-router-dom";
 import { UserContext } from "../../context/user-context.jsx";
 import { format } from "timeago.js";
 
-const baseRout = "http://localhost:9999/api/";
+const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
+const LocalBaseRout = "http://localhost:9999";
+const baseRout = `${ServerBaseRout}/api/`;
 
 const VideoPlayer = () => {
   const { user } = useContext(UserContext);
@@ -50,7 +52,7 @@ const VideoPlayer = () => {
 
   //fetch related videos to suggest next videos in the right side
   async function fetchRelatedVideos() {
-    const response = await fetch("http://localhost:9999/api/videos/random");
+    const response = await fetch(`${ServerBaseRout}/api/videos/random`);
     const data = await response.json();
     setRelatedVidos(data); // Update the state with the fetched data
   }

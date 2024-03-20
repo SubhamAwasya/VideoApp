@@ -4,7 +4,9 @@ import { icons, pages, routes } from "./PagesData.js";
 import { UserContext } from "../context/user-context.jsx";
 import NavBar from "./components/NavBar.jsx";
 
-const rout = "http://localhost:9999/api/users/tokenlogin";
+const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
+const LocalBaseRout = "http://localhost:9999";
+const rout = `${ServerBaseRout}/api/users/tokenlogin`;
 
 function App() {
   //user context

@@ -27,7 +27,7 @@ mongoose.set("strictQuery", false);
 // middlewares;
 app.use(
   cors({
-    origin: "http://172.25.48.1:5500",
+    origin: "https://video-app-three-ashy.vercel.app",
     credentials: true,
   })
 );

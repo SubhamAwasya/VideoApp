@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
+const LocalBaseRout = "http://localhost:9999";
+const rout = `${ServerBaseRout}/api/auth/signup`;
+
 function SignUp({ prop }) {
-  const rout = "http://localhost:9999/api/auth/signup";
   const [avatar, setavatar] = useState("DefaultProfile.png");
   const [imgFile, setimgFile] = useState(null);
 
