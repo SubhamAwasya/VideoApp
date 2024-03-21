@@ -1,13 +1,62 @@
 import User from "../models/User.js";
 import Video from "../models/Video.js";
 import { createError } from "../error.js";
+import {
+  uploadImgOnFireBase,
+  uploadVideoOnFireBase,
+} from "../utils/firebase.js";
 
 export const addVideo = async (req, res, next) => {
-  const newVideo = new Video({ userId: req.user.id, ...req.body });
   try {
+    // Checking is thumbnail image is present in req
+    if (!Array.isArray(req.files.thumbnail) && req.files.thumbnail.length > 0) {
+      res.status(500).send({ message: "Thumbnail is required" });
+    }
+
+    // Checking is thumbnail image is present in req
+    if (!Array.isArray(req.files.video) && req.files.video.length > 0) {
+      res.status(500).send({ message: "Vidoe is required" });
+    }
+
+    const publicThumbnailUrl = await uploadImgOnFireBase(
+      req.files.thumbnail[0].path
+    );
+
+    const publicVideoUrl = await uploadVideoOnFireBase(req.files.video[0].path);
+
+    console.log(publicThumbnailUrl);
+    console.log("////////////////////////////");
+    console.log(publicVideoUrl);
+
+    // is public url recieved from firebase
+    if (!publicThumbnailUrl) {
+      res.status(500).send({ message: "thumbnail uploading faild!" });
+    }
+    // is public url recieved from firebase
+    if (!publicVideoUrl) {
+      res.status(500).send({ message: "Vidoe uploading faild!" });
+    }
+
+    console.log(req.body);
+
+    const newVideo = new Video({
+      userId: req.body.userId,
+      title: req.body.title,
+      desc: req.body.desc,
+      thumbnail: publicThumbnailUrl,
+      videoUrl: publicVideoUrl,
+    });
     const savedVideo = await newVideo.save();
-    res.status(200).json(savedVideo);
+    console.log(savedVideo);
+    if (!savedVideo) {
+      res
+        .status(500)
+        .send({ message: "Somthing went wrong Video upload faild!" });
+    }
+    res.status(200).send({ message: "Video uploaded successfully" });
   } catch (err) {
+    res.send(err);
+    console.log(err);
     next(err);
   }
 };

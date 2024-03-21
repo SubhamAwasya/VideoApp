@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { format } from "timeago.js";
-
-const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
-const LocalBaseRout = "http://localhost:9999";
+import { baseRout } from "../ConstantData.js";
 
 const Comment = ({ props }) => {
   const [commentBy, setcommentBy] = useState({});
   async function fetchCommentBy() {
     //fetching that who comment in this video
     const commentByResponse = await fetch(
-      `${ServerBaseRout}/api/users/find/${props.userId}`
+      `${baseRout}/api/users/find/${props.userId}`
     );
     const tempCommentByData = await commentByResponse.json();
     setcommentBy(tempCommentByData);

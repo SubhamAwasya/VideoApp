@@ -6,10 +6,9 @@ import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../context/user-context.jsx";
 import { format } from "timeago.js";
+import { baseRout } from "../ConstantData.js";
 
-const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
-const LocalBaseRout = "http://localhost:9999";
-const baseRout = `${ServerBaseRout}/api/`;
+const rout = `${baseRout}/api/`;
 
 const VideoPlayer = () => {
   const { user } = useContext(UserContext);
@@ -27,32 +26,33 @@ const VideoPlayer = () => {
     textarea.style.height = `${textarea.scrollHeight}px`;
   }
 
+  async function fetchComments() {
+    const commentResponse = await fetch(`${rout}comments/${videoID}`);
+    const tempCommentData = await commentResponse.json();
+    setComments(tempCommentData);
+  }
   async function fetchVideoAndUserData() {
     //fetching video data based on params
-    const videoResponse = await fetch(`${baseRout}videos/find/${videoID}`);
+    const videoResponse = await fetch(`${rout}videos/find/${videoID}`);
 
     const tempVideoData = await videoResponse.json();
     //fetching user data based on video
     const userResponse = await fetch(
-      `${baseRout}users/find/${tempVideoData.userId}`
+      `${rout}users/find/${tempVideoData.userId}`
     );
     const tempUserData = await userResponse.json();
-    //fetching comments data based on video
-    // ---------------------------------------------------
-    const commentResponse = await fetch(`${baseRout}comments/${videoID}`);
-    const tempCommentData = await commentResponse.json();
     // ---------------------------------------------------
     //setting data of videos, users and comments
     setVideoData(tempVideoData);
     setUserData(tempUserData);
     // ---------------------------------------------------
-    setComments(tempCommentData);
+    //fetching comments data based on video
+    fetchComments();
     // ---------------------------------------------------
   }
-
   //fetch related videos to suggest next videos in the right side
   async function fetchRelatedVideos() {
-    const response = await fetch(`${ServerBaseRout}/api/videos/random`);
+    const response = await fetch(`${rout}videos/random`);
     const data = await response.json();
     setRelatedVidos(data); // Update the state with the fetched data
   }
@@ -70,7 +70,7 @@ const VideoPlayer = () => {
     const userId = user._id;
     const videoId = videoID;
 
-    await fetch(`${baseRout}comments`, {
+    await fetch(`${rout}comments`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -86,30 +86,65 @@ const VideoPlayer = () => {
         return res.json();
       })
       .then((res) => {
-        setComments((prevComments) => [res, ...prevComments]);
+        fetchComments();
       });
     // empty text area
     setCommentText("");
   }
-
   // update video view count
   async function videoViewUpdate() {
-    await fetch(`${baseRout}videos/video-view-update?id=${videoID}`, {
+    await fetch(`${rout}videos/view/${videoID}`, {
+      method: "put",
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {});
+  }
+  // like video
+  async function likeVideo() {
+    await fetch(`${rout}users/like/${videoID}`, {
       method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: user._id,
+      }),
+      credentials: "include",
     })
       .then((res) => {
         return res.json();
       })
       .then((res) => {
-        setComments((prevComments) => [res, ...prevComments]);
+        fetchVideoAndUserData();
       });
-    // empty text area
-    setCommentText("");
   }
+  // dislike video
+  async function dislikeVideo() {
+    await fetch(`${rout}users/dislike/${videoID}`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: user._id,
+      }),
+      credentials: "include",
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        fetchVideoAndUserData();
+      });
+  }
+  // checking if user if liked or disliked the video
 
   useEffect(() => {
     window.scrollTo(0, -1);
     //calling function to fetch data
+    videoViewUpdate();
     fetchVideoAndUserData();
     fetchRelatedVideos();
     // video play from start
@@ -118,7 +153,7 @@ const VideoPlayer = () => {
       VP.currentTime = 0;
       VP.play();
     });
-  }, [useParams(), videoData.id, setComments]);
+  }, [useParams(), setVideoData, setComments]);
 
   return (
     <div className="flex mx-20 w-full wf max-sm:mx-4 max-md:mx-10 my-4 ">
@@ -165,12 +200,23 @@ const VideoPlayer = () => {
             <div className="flex max-sm:flex-col">
               <button
                 disabled={!user}
-                className=" flex items-center justify-center h-[2rem] py-1 px-2 mx-1 rounded-lg border-2 border-neutral-400 hover:border-red-500 hover:text-red-500 text-xs disabled:text-zinc-700 disabled:border-zinc-700"
+                onClick={likeVideo}
+                className={` flex items-center justify-center h-[2rem] py-1 px-2 mx-1 rounded-lg border-2 border-neutral-400  hover:border-red-500 hover:text-red-500 text-xs disabled:text-zinc-700 disabled:border-zinc-700 `}
               >
                 <span className="material-symbols-outlined pr-1 scale-[0.8]">
                   thumb_up
                 </span>
-                {videoData.likes}
+                {videoData.likes?.length}
+              </button>
+              <button
+                disabled={!user}
+                onClick={dislikeVideo}
+                className={` flex items-center justify-center h-[2rem] py-1 px-2 mx-1 rounded-lg border-2 border-neutral-400 hover:border-red-500 hover:text-red-500 text-xs disabled:text-zinc-700 disabled:border-zinc-700 `}
+              >
+                <span className="material-symbols-outlined pr-1 scale-[0.8]">
+                  thumb_down
+                </span>
+                {videoData.dislikes?.length}
               </button>
               <button
                 disabled={!user}

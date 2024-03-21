@@ -2,9 +2,8 @@ import React from "react";
 import Video from "../components/Video";
 import { useEffect, useState } from "react";
 import "./css/videos_page.css";
+import { baseRout } from "../ConstantData.js";
 
-const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
-const LocalBaseRout = "http://localhost:9999";
 
 const HomePage = ({ prop }) => {
   const [videosData, setVideosData] = useState([]);
@@ -16,7 +15,7 @@ const HomePage = ({ prop }) => {
       setDataFetchingLog("Fetching videos...");
       setLoadingAnimatino(true);
 
-      const response = await fetch(`${ServerBaseRout}/api/videos/random`);
+      const response = await fetch(`${baseRout}/api/videos/random`);
       const data = await response.json();
 
       setVideosData(data); // Update the state with the fetched data
@@ -36,7 +35,7 @@ const HomePage = ({ prop }) => {
   return (
     <>
       {!dataFetchingLog ? (
-        <div className="video-page-container">
+        <div className="video-page-container m-0">
           {videosData.map((video, i) => {
             return <Video key={i} props={video} />;
           })}

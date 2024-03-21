@@ -22,13 +22,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
-export const uploadImgOnFireBase = async (imagePath) => {
+export const uploadImgOnFireBase = async (path) => {
   try {
     // Create a reference to the storage bucket
-    const storageRef = ref(storage, "images/" + imagePath);
+    const storageRef = ref(storage, "images/" + path);
 
     // Read the image file from the specified path
-    const imageFile = await fsPromises.readFile(imagePath);
+    const imageFile = await fsPromises.readFile(path);
 
     // Upload the image to Firebase Storage
     await uploadBytes(storageRef, imageFile);
@@ -38,7 +38,7 @@ export const uploadImgOnFireBase = async (imagePath) => {
 
     // Set or update the content type metadata to image/gif (adjust as needed)
     const updatedMetadata = {
-      contentType: "image/gif", // Change this to the appropriate content type
+      contentType: "image/video/gif", // Change this to the appropriate content type
       ...existingMetadata, // Preserve other existing metadata
     };
 
@@ -48,11 +48,47 @@ export const uploadImgOnFireBase = async (imagePath) => {
     const downloadURL = await getDownloadURL(storageRef);
 
     // Delete the local image file from the public folder
-    await fsPromises.unlink(imagePath);
+    await fsPromises.unlink(path);
 
     return downloadURL;
   } catch (error) {
     console.error("Error uploading image:", error);
+    throw error;
+  }
+};
+export const uploadVideoOnFireBase = async (path) => {
+  try {
+    // Create a reference to the storage bucket
+    const storageRef = ref(storage, "videos/" + path); // Use an appropriate folder for videos
+
+    // Read the video file from the specified path
+    const videoFile = await fsPromises.readFile(path);
+
+    // Upload the video to Firebase Storage
+    await uploadBytes(storageRef, videoFile, {
+      contentType: "video/mp4", // Set the correct content type
+    });
+
+    // Get the existing metadata (if any)
+    const existingMetadata = await getMetadata(storageRef);
+
+    // Update the content type metadata
+    const updatedMetadata = {
+      contentType: "video/mp4", // Change this to the appropriate content type
+      ...existingMetadata, // Preserve other existing metadata
+    };
+
+    await updateMetadata(storageRef, updatedMetadata);
+
+    // Get the public URL of the uploaded video
+    const downloadURL = await getDownloadURL(storageRef);
+
+    // Delete the local video file from the public folder
+    await fsPromises.unlink(path);
+
+    return downloadURL;
+  } catch (error) {
+    console.error("Error uploading video:", error);
     throw error;
   }
 };

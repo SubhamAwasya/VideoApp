@@ -43,7 +43,7 @@ const NavBar = ({
         {/*Search input */}
         <div>
           <input
-            className="w-96 p-1 pl-4 rounded-full max-lg:w-60 bg-neutral-900"
+            className="w-96 p-1 pl-4 rounded-full max-lg:w-60 max-sm:w-36 bg-neutral-900"
             placeholder="Search Videos"
           ></input>
         </div>

@@ -1,9 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
+import { baseRout } from "../src/ConstantData.js";
 
-const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
-const LocalBaseRout = "http://localhost:9999";
-
-const rout = `${ServerBaseRout}/api/auth/login_with_accesstoken`;
+const rout = `${baseRout}/api/auth/login_with_accesstoken`;
 
 // Create a context for the user
 export const UserContext = createContext(null);
@@ -21,6 +19,7 @@ const UserProvider = ({ children }) => {
   }); // State to hold the user details
 
   function loginWithAccessToken() {
+
     fetch(rout, {
       method: "post",
       headers: {
@@ -56,7 +55,7 @@ const UserProvider = ({ children }) => {
   // Function to simulate user logout
   const logOut = async () => {
     try {
-      await fetch(`${ServerBaseRout}/api/auth/logout`, {
+      await fetch(`${baseRout}/api/auth/logout`, {
         method: "post",
         credentials: "include",
         headers: {

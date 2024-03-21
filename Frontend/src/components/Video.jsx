@@ -2,9 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 import { Link } from "react-router-dom";
-
-const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
-const LocalBaseRout = "http://localhost:9999";
+import { baseRout } from "../ConstantData.js";
 
 const Video = ({ props }) => {
   const [userData, setUserData] = useState({});
@@ -12,7 +10,7 @@ const Video = ({ props }) => {
   async function fetchUserData() {
     try {
       const userResponse = await fetch(
-        `${ServerBaseRout}/api/users/find/${props.userId}`
+        `${baseRout}/api/users/find/${props.userId}`
       );
       setUserData(await userResponse.json());
     } catch (error) {
@@ -28,7 +26,7 @@ const Video = ({ props }) => {
   return (
     <>
       <Link to={`/play/${props._id}`} className="mb-4">
-        <div className="hover:bg-zinc-800 p-1 rounded-lg">
+        <div className="hover:bg-zinc-800 rounded-lg">
           {/*Thumbnail img */}
           <img
             src={`${props.thumbnail}`}

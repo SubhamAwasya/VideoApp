@@ -121,10 +121,7 @@ export const signinWithAccessToken = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
     // const token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET);
-
     const { password, refreshToken, ...others } = user._doc;
-
-    console.log(others);
     res.status(200).send(others);
   } catch (err) {
     next(err);

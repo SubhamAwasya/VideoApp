@@ -1,12 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { icons, pages, routes } from "./PagesData.js";
+import { baseRout, icons, pages, routes } from "./ConstantData.js";
 import { UserContext } from "../context/user-context.jsx";
 import NavBar from "./components/NavBar.jsx";
 
-const ServerBaseRout = "https://videoapp-dtxd.onrender.com";
-const LocalBaseRout = "http://localhost:9999";
-const rout = `${ServerBaseRout}/api/users/tokenlogin`;
+const rout = `${baseRout}/api/users/tokenlogin`;
 
 function App() {
   //user context
